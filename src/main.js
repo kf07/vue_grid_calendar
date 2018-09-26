@@ -4,8 +4,10 @@ import Vue from 'vue'
 import App from './App'
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css'
+import lodash from 'lodash'
 
 Vue.use(Vuesax)
+Object.defineProperty(Vue.prototype, '$lodash', { value: lodash })
 
 Vue.config.productionTip = false
 

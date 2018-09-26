@@ -2,18 +2,16 @@
     <div>
         <div class="calendar">
             <div class="calendar__head">
-                <vs-button v-on:click="monthPrev" vs-type="filled" class="button">前月</vs-button>
+                <vs-button v-on:click="monthPrev" vs-type="filled" class="button">前</vs-button>
                 <p>{{year}}年{{month}}月</p>
-                <vs-button v-on:click="monthNext" vs-type="filled" class="button">次月</vs-button>
+                <vs-button v-on:click="monthNext" vs-type="filled" class="button">次</vs-button>
             </div>
             <ul class="weeks">
                 <li class="weeks__item" v-for="week in weekList">{{week}}</li>
             </ul>
-            <ul class="days">
-                <li class="day__item" v-for="(day,index) in dayList" v-bind:key="day.id" v-bind:style="[ index === 0 ?{gridColumn:gridStart + '/' + gridEnd}:'']">
-                    {{day.day}}
-                </li>
-            </ul>
+            <transition-group class="days" tag="ul">
+                <li class="day__item" v-for="(day,index) in dayList" v-bind:key="index" v-bind:style="[ index === 0 ?{gridColumn:gridStart + '/' + gridEnd}:'']" v-bind:class="'week' + day.weekday">{{day.day}}</li>
+            </transition-group>
         </div>
     </div>
 </template>
@@ -23,7 +21,6 @@
         name: "Calendar",
         data: function () {
             return {
-                active: true,
                 today: 0,
                 year: 0,
                 month: 0,
@@ -33,7 +30,8 @@
                 firstDay: 0,
                 weekday: 0,
                 gridStart: 0,
-                gridEnd: 1
+                gridEnd: 1,
+                order: false
             }
         },
         created: function () {
@@ -41,20 +39,6 @@
             this.year = this.today.getFullYear();
             this.month = this.today.getMonth() + 1;
         },
-        // computed: {
-        //     //今日の日付データを取得
-        //     today: function () {
-        //         return new Date();
-        //     },
-        //     //今日の日付から年を取得
-        //     year: function () {
-        //         return this.today.getFullYear();
-        //     },
-        //     //今日の日付から月を取得
-        //     month: function () {
-        //         return this.today.getMonth() + 1;
-        //     }
-        // },
         watch: {
             month: {
                 handler: function () {
@@ -79,12 +63,6 @@
                 },
                 immediate: true
             },
-            // month: function () {
-            //     this.dayList = [];
-            //     for (let i = 1; i <= this.lastDay; i++) {
-            //         this.dayList.push(i)
-            //     }
-            // }
         },
         methods: {
             monthNext: function () {
@@ -127,6 +105,14 @@
         padding: 5px 0;
     }
 
+    .week6 {
+        color: blue;
+    }
+
+    .week0 {
+        color: red;
+    }
+
     ul {
         list-style: none;
         padding: 0;
@@ -142,5 +128,11 @@
 
     .button {
         width: 70px;
+    }
+    .v-enter-active, .v-leave-active {
+        transition: opacity 1s;
+    }
+    .v-move {
+        transition: transform 1s;
     }
 </style>
